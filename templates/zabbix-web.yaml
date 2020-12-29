@@ -40,21 +40,21 @@ spec:
               path: /
               port: web-http
               scheme: HTTP
-            initialDelaySeconds: 15
-            timeoutSeconds: 2
-            periodSeconds: 10
+            initialDelaySeconds: 30
+            timeoutSeconds: 12
+            periodSeconds: 30
             successThreshold: 1
-            failureThreshold: 5
+            failureThreshold: 2
           readinessProbe:
             httpGet:
               path: /
               port: web-http
               scheme: HTTP
-            initialDelaySeconds: 15
-            timeoutSeconds: 2
-            periodSeconds: 10
+            initialDelaySeconds: 30
+            timeoutSeconds: 12
+            periodSeconds: 30
             successThreshold: 1
-            failureThreshold: 5
+            failureThreshold: 2
           env:
           - name: ZBX_SERVER_NAME
             value: "Zabbix kubernetes"
