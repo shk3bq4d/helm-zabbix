@@ -17,7 +17,7 @@ ingress:
   #     secretName: www.example.com
 
 zabbix:
-  version: 5.2-latest
+  version: 6.2-latest
   database:
     type: mysql
     name: zabbix
@@ -39,6 +39,7 @@ server:
   env: {}
   volumes: []
   volumeMounts: []
+  replicas: 1
 
 web:
   enabled: true

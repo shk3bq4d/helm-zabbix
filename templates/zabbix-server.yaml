@@ -5,18 +5,39 @@ metadata:
   name: zabbix-server
   namespace: "{{ .Values.zabbix.namespace }}"
   labels:
-    app: zabbix-server
+    # https://kubernetes.io/docs/concepts/overview/working-with-objects/common-labels/
+    app.kubernetes.io/name:       zabbix-server
+    app.kubernetes.io/instance:   zabbix-server
+    app.kubernetes.io/managed-by: helm
 spec:
-  replicas: 1
+  replicas: {{ .Values.server.replicas }}
   serviceName: zabbix-server
   selector:
     matchLabels:
-      app: zabbix-server
+      app.kubernetes.io/name:     zabbix-server
+      app.kubernetes.io/instance: zabbix-server
   template:
     metadata:
       labels:
-        app: zabbix-server
+        app.kubernetes.io/name:     zabbix-server
+        app.kubernetes.io/instance: zabbix-server
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/instance
+                  operator: In
+                  values:
+                  - zabbix-server
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                  - zabbix-server
+              topologyKey: kubernetes.io/hostname
+            weight: 1
       containers:
         - name: zabbix-server
           {{ if .Values.server.image }}
@@ -30,18 +51,24 @@ spec:
             protocol: TCP
             name: zabbix-trapper
           readinessProbe:
-            tcpSocket:
-              port: zabbix-trapper
+            exec:
+              command:
+              - /usr/bin/pgrep
+              - ha manager
             initialDelaySeconds: 5
             periodSeconds: 10
           livenessProbe:
-            tcpSocket:
-              port: zabbix-trapper
+            exec:
+              command:
+              - /usr/bin/pgrep
+              - ha manager
             initialDelaySeconds: 15
             periodSeconds: 10
           startupProbe:
-            tcpSocket:
-              port: zabbix-trapper
+            exec:
+              command:
+              - /usr/bin/pgrep
+              - ha manager
             failureThreshold: 30
             periodSeconds: 10
           env:
@@ -93,6 +120,20 @@ spec:
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{- end }}
+          - name: ZBX_AUTOHANODENAME
+            value: fqdn # Allowed values: fqdn, hostname. Available since 6.0.0
+          - name: ZBX_HANODENAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: ZBX_AUTONODEADDRESS
+            value: fqdn # Allowed values: fqdn, hostname. Available since 6.0.0
+          - name: ZBX_NODEADDRESSPORT
+            value: '10051' # Allowed to use with ZBX_AUTONODEADDRESS variable only. Available since 6.0.0
+          - name: ZBX_NODEADDRESS
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
           securityContext:
             privileged: {{ .Values.server.securityContext.privileged }}
             runAsUser: {{ .Values.server.securityContext.runAsUser }}

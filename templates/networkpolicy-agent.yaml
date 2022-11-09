@@ -12,14 +12,16 @@ spec:
     - from:
         - podSelector:
             matchLabels:
-              app: zabbix-server
+              app.kubernetes.io/name:     zabbix-server
+              app.kubernetes.io/instance: zabbix-server
       ports:
         - port: 10050
   egress:
     - to:
         - podSelector:
             matchLabels:
-              app: zabbix-server
+              app.kubernetes.io/name:     zabbix-server
+              app.kubernetes.io/instance: zabbix-server
       ports:
         - port: 10051
     - to:

@@ -20,7 +20,8 @@ spec:
     name: "snmp-trap"
   {{- end }}
   selector:
-    app: "zabbix-server"
+    app.kubernetes.io/name:     zabbix-server
+    app.kubernetes.io/instance: zabbix-server
 {{- if .Values.server.externalIPs }}
   externalIPs:
   {{- toYaml .Values.server.externalIPs | nindent 8 }}
