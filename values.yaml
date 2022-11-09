@@ -43,6 +43,7 @@ server:
 
 web:
   enabled: true
+  replicas: 1
   webserver: nginx
   timezone: Europe/Riga
   securityContext:

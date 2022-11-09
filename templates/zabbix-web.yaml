@@ -5,17 +5,36 @@ metadata:
   name: zabbix-web
   namespace: "{{ .Values.zabbix.namespace }}"
   labels:
-    app: zabbix-web
+    app.kubernetes.io/name:     zabbix-web
+    app.kubernetes.io/instance: zabbix-web
 spec:
-  replicas: 1
+  replicas: {{ .Values.web.replicas }}
   selector:
     matchLabels:
-      app: zabbix-web
+      app.kubernetes.io/name:     zabbix-web
+      app.kubernetes.io/instance: zabbix-web
   template:
     metadata:
       labels:
-        app: zabbix-web
+        app.kubernetes.io/name:     zabbix-web
+        app.kubernetes.io/instance: zabbix-web
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/instance
+                  operator: In
+                  values:
+                  - zabbix-web
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                  - zabbix-web
+              topologyKey: kubernetes.io/hostname
+            weight: 1
       containers:
         - name: zabbix-web
           {{ if .Values.web.image }}

@@ -19,7 +19,8 @@ spec:
     - from:
         - podSelector:
             matchLabels:
-              app: zabbix-web
+              app.kubernetes.io/name:     zabbix-web
+              app.kubernetes.io/instance: zabbix-web
       ports:
         - port: 10051
   egress:
