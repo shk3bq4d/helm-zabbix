@@ -35,11 +35,14 @@ server:
 
   snmptraps:
     enabled: true
-  externalIPs: []
   env: {}
   volumes: []
   volumeMounts: []
   replicas: 1
+  service:
+    externalIPs: []
+    loadBalancerIP: ''
+    annotations: {}
 
 web:
   enabled: true
