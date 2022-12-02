@@ -51,12 +51,11 @@ spec:
             protocol: TCP
             name: zabbix-trapper
           readinessProbe:
-            exec:
-              command:
-              - /usr/bin/pgrep
-              - ha manager
-            initialDelaySeconds: 5
-            periodSeconds: 10
+            tcpSocket:
+              port: zabbix-trapper
+            initialDelaySeconds: 8
+            failureThreshold: 1
+            periodSeconds: 3
           livenessProbe:
             exec:
               command:
