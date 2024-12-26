@@ -40,7 +40,7 @@ spec:
           {{ if .Values.web.image }}
           image: "{{ .Values.web.image }}"
           {{ else }}
-          image: zabbix/zabbix-web-{{ .Values.web.webserver }}-{{ .Values.zabbix.database.type }}:alpine-{{ if .Values.web.version }}{{ .Values.web.version }}{{- else }}{{ .Values.zabbix.version }}{{- end }}
+          image: zabbix/zabbix-web-{{ .Values.web.webserver }}-{{ .Values.zabbix.database.type }}:{{ if .Values.web.version }}{{ .Values.web.version }}{{- else }}{{ .Values.zabbix.version }}{{- end }}
           {{- end }}
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           ports:

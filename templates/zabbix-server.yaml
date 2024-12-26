@@ -43,7 +43,7 @@ spec:
           {{ if .Values.server.image }}
           image: "{{ .Values.server.image }}"
           {{ else }}
-          image: "zabbix/zabbix-server-{{ .Values.zabbix.database.type }}:alpine-{{ if .Values.server.version }}{{ .Values.server.version }}{{- else }}{{ .Values.zabbix.version }}{{- end }}"
+          image: "zabbix/zabbix-server-{{ .Values.zabbix.database.type }}:{{ if .Values.server.version }}{{ .Values.server.version }}{{- else }}{{ .Values.zabbix.version }}{{- end }}"
           {{- end }}
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           ports:
@@ -149,7 +149,7 @@ spec:
           {{- end }}
         {{- if .Values.server.snmptraps.enabled }}
         - name: zabbix-snmptraps
-          image: "zabbix/zabbix-snmptraps:alpine-{{ if .Values.server.version }}{{ .Values.server.version }}{{- else }}{{ .Values.zabbix.version }}{{- end }}"
+          image: "zabbix/zabbix-snmptraps:{{ if .Values.server.version }}{{ .Values.server.version }}{{- else }}{{ .Values.zabbix.version }}{{- end }}"
           imagePullPolicy: Always
           ports:
           - containerPort: 1162
