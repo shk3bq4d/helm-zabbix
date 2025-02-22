@@ -60,14 +60,16 @@ spec:
             exec:
               command:
               - /usr/bin/pgrep
-              - ha manager
+              - -f
+              - "zabbix_server: ha manager"
             initialDelaySeconds: 15
             periodSeconds: 10
           startupProbe:
             exec:
               command:
               - /usr/bin/pgrep
-              - ha manager
+              - -f
+              - "zabbix_server: ha manager"
             failureThreshold: 30
             periodSeconds: 10
           env:
